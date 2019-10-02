@@ -23,6 +23,57 @@ void intake_control(void *)
 void drive_control(void *)
 {
 	pros::Controller master(CONTROLLER_MASTER);
+	drive_coast();
+	while (true)
+	{
+		set_tank(master.get_analog(ANALOG_LEFT_Y), master.get_analog(ANALOG_RIGHT_Y));
+		pros::delay(20);
+	}
+}
+
+const int TRAY_BACK = 3000;
+const int TRAY_OUT = 1760;
+
+void tray_control(void *)
+{
+	pros::Controller master(CONTROLLER_MASTER);
+	pros::Task tray_t(tray_pid, nullptr, "tray pid");
+	bool b_toggle = false;
+	int j = 0;
+	while (true)
+	{
+		if (master.get_digital(DIGITAL_Y))
+		{
+			b_toggle = !b_toggle;
+
+			if (b_toggle)
+			{
+				for (int i = TRAY_BACK; i > TRAY_OUT; i = i - j)
+				{
+					if(i > 2670) j = 10;
+					else if(i > 2000) j = 5;
+					set_tray_pid(i);
+					pros::delay(5);
+				}
+			}
+			else
+			{
+				set_tray_pid(TRAY_BACK);
+			}
+
+			while (master.get_digital(DIGITAL_Y))
+			{
+				pros::delay(1);
+			}
+		}
+
+		pros::delay(20);
+	}
+}
+
+/* void drive_control(void *)
+{
+	pros::Controller master(CONTROLLER_MASTER);
 
 	drive_hold();
 	diff_coast();
@@ -97,7 +148,7 @@ void drive_control(void *)
 
 		pros::delay(1);
 	}
-}
+} */
 
 /**
  * A callback function for LLEMU's center button.
