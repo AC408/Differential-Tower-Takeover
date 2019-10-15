@@ -2,7 +2,7 @@
 
 // Otherwise, you should specify the gearset and scales for your robot
 ChassisControllerPID chassisController = ChassisControllerFactory::create(
-    {1, 2}, {-10, -9},
+    {11, 12}, {-20, 19},
     IterativePosPIDController::Gains{0.001, 0, 0.0001}, //{0.001, 0, 0.0001}}
     IterativePosPIDController::Gains{0.001, 0, 0.0001},
     IterativePosPIDController::Gains{0.01725, 0.025, 0.0004}, //0.01, 0.000325, 0.01425, 0.0004
@@ -23,7 +23,7 @@ pros::Motor lf_drive(12, MOTOR_GEARSET_18, true);
 pros::Motor rf_drive(19, MOTOR_GEARSET_18);
 pros::Motor rb_drive(20, MOTOR_GEARSET_18, true);
 pros::Motor l_diff(13, MOTOR_GEARSET_18);
-pros::Motor r_diff(18, MOTOR_GEARSET_18, true);
+pros::Motor r_diff(18, MOTOR_GEARSET_18);
 pros::Motor l_intake(14, MOTOR_GEARSET_18);
 pros::Motor r_intake(17, MOTOR_GEARSET_18, true);
 
@@ -157,7 +157,8 @@ int get_diff_spe()
 
 int get_tray()
 {
-    return tray_pot.get_value();
+    //return tray_pot.get_value();
+    return l_diff.get_position();
 }
 
 //PID Tasks

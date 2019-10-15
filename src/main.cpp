@@ -2,7 +2,7 @@
 
 #include "main.h"
 
-bool diff_moving = true;
+bool tray_mode = false;
 
 void intake_control(void *)
 {
@@ -10,7 +10,11 @@ void intake_control(void *)
 	intake_hold();
 	while (true)
 	{
-		if (master.get_digital(DIGITAL_R1))
+		if (master.get_digital(DIGITAL_X) && master.get_digital(DIGITAL_R1))
+			set_intake(60);
+		else if (master.get_digital(DIGITAL_X) && master.get_digital(DIGITAL_R2))
+			set_intake(-60);
+		else if (master.get_digital(DIGITAL_R1))
 			set_intake(127); //Intake
 		else if (master.get_digital(DIGITAL_R2))
 			set_intake(-127); //Outtake
@@ -26,46 +30,33 @@ void drive_control(void *)
 	drive_coast();
 	while (true)
 	{
-		set_tank(master.get_analog(ANALOG_LEFT_Y), master.get_analog(ANALOG_RIGHT_Y));
+		if (!tray_mode)
+			set_tank(master.get_analog(ANALOG_LEFT_Y), master.get_analog(ANALOG_RIGHT_Y));
 		pros::delay(20);
 	}
 }
 
-const int TRAY_BACK = 3000;
-const int TRAY_OUT = 1760;
+const int TRAY_BACK = 0;
+const int TRAY_OUT = -6000;
 
 void tray_control(void *)
 {
 	pros::Controller master(CONTROLLER_MASTER);
-	pros::Task tray_t(tray_pid, nullptr, "tray pid");
-	bool b_toggle = false;
 	int j = 0;
+	diff_hold();
 	while (true)
 	{
-		if (master.get_digital(DIGITAL_Y))
+		if (master.get_digital(DIGITAL_L1))
 		{
-			b_toggle = !b_toggle;
-
-			if (b_toggle)
-			{
-				for (int i = TRAY_BACK; i > TRAY_OUT; i = i - j)
-				{
-					if(i > 2670) j = 10;
-					else if(i > 2000) j = 5;
-					set_tray_pid(i);
-					pros::delay(5);
-				}
-			}
-			else
-			{
-				set_tray_pid(TRAY_BACK);
-			}
-
-			while (master.get_digital(DIGITAL_Y))
-			{
-				pros::delay(1);
-			}
+			tray_mode = !tray_mode;
+			while(master.get_digital(DIGITAL_L1))
+				pros::delay(10);
 		}
+		if (tray_mode)
+			set_diff(master.get_analog(ANALOG_RIGHT_Y));
+		
+		else
+			set_diff(0);		
 
 		pros::delay(20);
 	}
@@ -166,12 +157,6 @@ void on_center_button() {
 	}
 }
 
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
 void initialize() {
 	pros::lcd::initialize();
 
@@ -182,50 +167,28 @@ void initialize() {
 	reset_diff_encoder();
 }
 
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
+
 void disabled() {}
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
 void competition_initialize() {}
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
-void autonomous() {}
+void autonomous() {
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 3_ft, 0_deg}}, "A");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{-3_ft, 3_ft, 0_deg}}, "B");
+	drive_hold();
+	pros::Controller master(CONTROLLER_MASTER);
+	master.set_text(0, 0, "Hey auton ran");
+	set_intake(127);
+	profileController.setTarget("A");
+	profileController.waitUntilSettled();
+	profileController.removePath("A");
+	profileController.setTarget("B", true);
+	profileController.waitUntilSettled();
+	profileController.removePath("B");
+	set_intake(-127);
+}
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
+
 void opcontrol() {
 	pros::Controller master(CONTROLLER_MASTER);
 
@@ -233,6 +196,7 @@ void opcontrol() {
 
 	pros::Task intake_control_t(intake_control, nullptr, "name");
 	pros::Task drive_control_t(drive_control, nullptr, "name");
+	pros::Task tray_control_t(tray_control, nullptr, "name");
 
 	while (true)
 	{
