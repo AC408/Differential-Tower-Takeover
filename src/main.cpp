@@ -4,6 +4,40 @@
 
 bool tray_mode = false;
 
+/*void tray_outtake(void*){
+	pros::Controller master(CONTROLLER_MASTER);
+	drive_hold();
+		if (get_tray() > TRAY_OUT)
+		{
+			while (get_tray() > TRAY_OUT)
+			{
+				if (get_tray() > 2670)
+					set_diff(127);
+				else if (get_tray() > TRAY_OUT)
+				{
+					set_diff(40);
+					pros::delay(5);
+					set_diff(20);
+					pros::delay(120);
+				}
+				pros::delay(1);
+			}
+			diff_hold();
+			set_diff(0);
+		}
+		else if (get_tray() < TRAY_BACK)
+		{
+			while (get_tray() < TRAY_BACK)
+			{
+				set_diff(-120);
+				pros::delay(1);
+			}
+			diff_hold();
+			set_diff(0);
+		}
+}
+*/
+
 void intake_control(void *)
 {
 	pros::Controller master(CONTROLLER_MASTER);
@@ -168,24 +202,49 @@ void initialize() {
 }
 
 
+
 void disabled() {}
 
 void competition_initialize() {}
 
 void autonomous() {
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 3_ft, 0_deg}}, "A");
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{-3_ft, 3_ft, 0_deg}}, "B");
+//move generate path to initialize
+//this is for the left side of the field
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "A");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2_ft, 0_deg}}, "B");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 0_ft, 180_deg}}, "C");
+
 	drive_hold();
-	pros::Controller master(CONTROLLER_MASTER);
-	master.set_text(0, 0, "Hey auton ran");
-	set_intake(127);
+
 	profileController.setTarget("A");
+	set_intake(-127);
+	pros::delay(100);
+	set_intake(127);
+	profileController.waitUntilSettled();
+	
+	profileController.setTarget("B", true);
+	set_intake(0);
+	profileController.waitUntilSettled();
+	chassisController.stop();
+	profileController.flipDisable();
+	set_tank(-40,-40);
+	pros::delay(500);
+	profileController.flipDisable();
+	profileController.removePath("B");
+
+	profileController.setTarget("A");
+	set_intake(127);
 	profileController.waitUntilSettled();
 	profileController.removePath("A");
-	profileController.setTarget("B", true);
-	profileController.waitUntilSettled();
-	profileController.removePath("B");
-	set_intake(-127);
+	
+	profileController.setTarget("C", true);
+	set_intake(0);
+//	tray_outtake();
+	profileController.removePath("C");
+
+//s turn back to the first function
+//curve to turn to the wall
+//left motor higher		
 }
 
 
