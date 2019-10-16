@@ -70,28 +70,42 @@ void drive_control(void *)
 	}
 }
 
-const int TRAY_BACK = 0;
-const int TRAY_OUT = -6000;
+const int TRAY_OUT = 5900;
 
 void tray_control(void *)
 {
 	pros::Controller master(CONTROLLER_MASTER);
-	int j = 0;
+	int counter = 0;
 	diff_hold();
 	while (true)
 	{
 		if (master.get_digital(DIGITAL_L1))
 		{
-			tray_mode = !tray_mode;
-			while(master.get_digital(DIGITAL_L1))
+			while (master.get_digital(DIGITAL_L1))
 				pros::delay(10);
+			switch(counter)
+			{
+				case 0:
+					while (!tray_pressed())
+					{
+						set_diff(127);
+					}
+					set_diff(0);
+					reset_diff_encoder();
+					counter++;
+					break;
+				case 1:
+					while (get_tray() < 3500)
+					{
+						set_diff(-127);
+					}
+					while (get_tray() < TRAY_OUT)
+						set_diff(-40);
+					set_diff(0);
+					counter = 0;
+					break;
+			}
 		}
-		if (tray_mode)
-			set_diff(master.get_analog(ANALOG_RIGHT_Y));
-		
-		else
-			set_diff(0);		
-
 		pros::delay(20);
 	}
 }
@@ -261,6 +275,23 @@ void opcontrol() {
 	{
 		pros::lcd::set_text(1, "Selector Value: " + std::to_string(selector));
 		pros::lcd::set_text(2, "Tray Sensor:" + std::to_string(get_tray()));
+		if(!tray_pressed())
+		{
+			pros::lcd::clear_line(3);
+			pros::lcd::set_text(3, "Not pressed btw");
+		}
+		else if(tray_pressed())
+		{
+			pros::lcd::clear_line(3);
+			pros::lcd::set_text(3, "Pressed btw");
+		}
+		else
+		{
+			pros::lcd::clear_line(3);
+			pros::lcd::set_text(3, "Condition not true");
+		}
+		
+		
 
 		pros::delay(20);
 	}

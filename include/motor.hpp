@@ -29,8 +29,7 @@ int get_left_drive_spe();
 int get_right_drive_spe();
 int get_diff_spe();
 int get_tray();
-void set_tray_pid(int input);
-void tray_pid(void *);
+bool tray_pressed();
 
 #define LIFT_DOWN 2560;
 

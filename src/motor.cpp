@@ -28,7 +28,8 @@ pros::Motor l_intake(14, MOTOR_GEARSET_18);
 pros::Motor r_intake(17, MOTOR_GEARSET_18, true);
 
 //Sensors
-pros::ADIPotentiometer tray_pot('A');
+//pros::ADIPotentiometer tray_pot('A');
+pros::ADIDigitalIn tray_limit('A');
 
 //Math
 int sgn(int input)
@@ -158,21 +159,14 @@ int get_diff_spe()
 int get_tray()
 {
     //return tray_pot.get_value();
-    return l_diff.get_position();
+    return -l_diff.get_position();
 }
 
-//PID Tasks
-int t_target;
-void set_tray_pid(int input)
+bool tray_pressed()
 {
-    t_target = input;
-}
-
-void tray_pid(void *)
-{
-    while (true)
+    if (tray_limit.get_value() == 1)
     {
-        set_diff((t_target - tray_pot.get_value()) * 0.4);
-        pros::delay(20);
+        return true;
     }
+    return false;
 }
