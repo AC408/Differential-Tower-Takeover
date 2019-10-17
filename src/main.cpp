@@ -4,40 +4,6 @@
 
 bool tray_mode = false;
 
-/*void tray_outtake(void*){
-	pros::Controller master(CONTROLLER_MASTER);
-	drive_hold();
-		if (get_tray() > TRAY_OUT)
-		{
-			while (get_tray() > TRAY_OUT)
-			{
-				if (get_tray() > 2670)
-					set_diff(127);
-				else if (get_tray() > TRAY_OUT)
-				{
-					set_diff(40);
-					pros::delay(5);
-					set_diff(20);
-					pros::delay(120);
-				}
-				pros::delay(1);
-			}
-			diff_hold();
-			set_diff(0);
-		}
-		else if (get_tray() < TRAY_BACK)
-		{
-			while (get_tray() < TRAY_BACK)
-			{
-				set_diff(-120);
-				pros::delay(1);
-			}
-			diff_hold();
-			set_diff(0);
-		}
-}
-*/
-
 void intake_control(void *)
 {
 	pros::Controller master(CONTROLLER_MASTER);
@@ -108,6 +74,30 @@ void tray_control(void *)
 		}
 		pros::delay(20);
 	}
+}
+
+void tray_outtake(){
+	pros::Controller master(CONTROLLER_MASTER);
+	diff_hold();
+	
+	while (get_tray() < 3500)
+		{
+			set_diff(-127);
+		}
+	while (get_tray() < TRAY_OUT)
+		set_diff(-40);
+}
+
+void tray_intake(){
+	pros::Controller master(CONTROLLER_MASTER);
+	diff_hold();
+	
+	while (!tray_pressed())
+	{
+		set_diff(127);
+	}
+	set_diff(0);
+	reset_diff_encoder();
 }
 
 /* void drive_control(void *)
@@ -205,28 +195,22 @@ void on_center_button() {
 	}
 }
 
-void initialize() {
-	pros::lcd::initialize();
+void skills(){
 
-	pros::lcd::register_btn1_cb(on_center_button);
-
-	reset_drive_encoder();
-	reset_intake_encoder();
-	reset_diff_encoder();
 }
 
+void front_red(){
 
+}
 
-void disabled() {}
+void front_blue(){
 
-void competition_initialize() {}
+}
 
-void autonomous() {
-//move generate path to initialize
-//this is for the left side of the field
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "A");
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2_ft, 0_deg}}, "B");
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 0_ft, 180_deg}}, "C");
+//front is protect
+//back is unprotected
+
+void back(){
 
 	drive_hold();
 
@@ -253,8 +237,68 @@ void autonomous() {
 	
 	profileController.setTarget("C", true);
 	set_intake(0);
-//	tray_outtake();
 	profileController.removePath("C");
+
+	profileController.setTarget("D");
+	profileController.removePath("D");
+	tray_outtake();
+	set_tank(-70,-70);
+	pros::delay(1000);
+	tray_intake();
+}
+
+void init_skills(){
+	
+}
+
+void init_front_red(){
+
+}
+
+void init_front_blue(){
+
+}
+
+void init_back_red(){
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "A");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2_ft, 0_deg}}, "B");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -2_ft, 95_deg}}, "C");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 0_ft, 0_deg}}, "D");
+}
+
+void init_back_blue(){
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "A");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -2_ft, 0_deg}}, "B");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2_ft, 275_deg}}, "C");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 0_ft, 0_deg}}, "D");
+}
+
+void initialize() {
+	pros::lcd::initialize();
+
+	pros::lcd::register_btn1_cb(on_center_button);
+
+	reset_drive_encoder();
+	reset_intake_encoder();
+	reset_diff_encoder();
+	init_back_blue();
+}
+
+
+
+void disabled() {}
+
+void competition_initialize() {}
+
+
+
+
+void autonomous() {
+
+	back();
+
+//move generate path to initialize
+//this is for the left side of the field
 
 //s turn back to the first function
 //curve to turn to the wall
