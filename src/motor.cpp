@@ -170,3 +170,13 @@ bool tray_pressed()
     }
     return false;
 }
+
+void tray_auto_reset(void *)
+{
+    while (true)
+    {
+        if (tray_pressed())
+            reset_diff_encoder();
+        pros::delay(10);    
+    }
+}

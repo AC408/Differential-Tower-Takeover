@@ -211,36 +211,49 @@ void front_blue(){
 //back is unprotected
 
 void back(){
-
+	//Set brakes
 	drive_hold();
-
-	profileController.setTarget("A");
+	diff_hold();
+	intake_hold();
+	
+	//Deploy
 	set_intake(-127);
 	pros::delay(100);
-	set_intake(127);
-	profileController.waitUntilSettled();
 	
-	profileController.setTarget("B", true);
+	//First row
+	set_intake(127);
+	profileController.setTarget("A");
+	profileController.waitUntilSettled();
 	set_intake(0);
+	
+	//Sexy S curve
+	profileController.setTarget("B", true);
 	profileController.waitUntilSettled();
 	chassisController.stop();
 	profileController.flipDisable();
+
+	//Align
 	set_tank(-40,-40);
 	pros::delay(500);
 	profileController.flipDisable();
 	profileController.removePath("B");
 
-	profileController.setTarget("A");
+	//Second row
 	set_intake(127);
+	profileController.setTarget("A");
 	profileController.waitUntilSettled();
 	profileController.removePath("A");
-	
-	profileController.setTarget("C", true);
 	set_intake(0);
+	
+	//Turn owo
+	profileController.setTarget("C", true);
 	profileController.removePath("C");
 
+	//Drive forward
 	profileController.setTarget("D");
 	profileController.removePath("D");
+
+	//Deploy
 	tray_outtake();
 	set_tank(-70,-70);
 	pros::delay(1000);
@@ -248,7 +261,7 @@ void back(){
 }
 
 void init_skills(){
-	
+
 }
 
 void init_front_red(){
@@ -275,12 +288,12 @@ void init_back_blue(){
 
 void initialize() {
 	pros::lcd::initialize();
-
 	pros::lcd::register_btn1_cb(on_center_button);
 
 	reset_drive_encoder();
 	reset_intake_encoder();
 	reset_diff_encoder();
+
 	init_back_blue();
 }
 
@@ -294,7 +307,7 @@ void competition_initialize() {}
 
 
 void autonomous() {
-
+	pros::Task tray_reset_t(tray_auto_reset, nullptr, "name");
 	back();
 
 //move generate path to initialize

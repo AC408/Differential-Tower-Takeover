@@ -30,6 +30,7 @@ int get_right_drive_spe();
 int get_diff_spe();
 int get_tray();
 bool tray_pressed();
+void tray_auto_reset(void *);
 
 #define LIFT_DOWN 2560;
 
