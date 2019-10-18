@@ -29,9 +29,11 @@ int get_left_drive_spe();
 int get_right_drive_spe();
 int get_diff_spe();
 int get_tray();
+int get_auton_select();
 bool tray_pressed();
+void auto_selector();
 void tray_auto_reset(void *);
 
-#define LIFT_DOWN 2560;
+#define TRAY_OUT 5900
 
 #endif

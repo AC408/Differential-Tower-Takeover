@@ -1,80 +1,6 @@
 #include "main.h"
 
-#include "main.h"
-
 bool tray_mode = false;
-
-void intake_control(void *)
-{
-	pros::Controller master(CONTROLLER_MASTER);
-	intake_hold();
-	while (true)
-	{
-		if (master.get_digital(DIGITAL_X) && master.get_digital(DIGITAL_R1))
-			set_intake(60);
-		else if (master.get_digital(DIGITAL_X) && master.get_digital(DIGITAL_R2))
-			set_intake(-60);
-		else if (master.get_digital(DIGITAL_R1))
-			set_intake(127); //Intake
-		else if (master.get_digital(DIGITAL_R2))
-			set_intake(-127); //Outtake
-		else
-			set_intake(0); //No movement
-		pros::delay(20);
-	}
-}
-
-void drive_control(void *)
-{
-	pros::Controller master(CONTROLLER_MASTER);
-	drive_coast();
-	while (true)
-	{
-		if (!tray_mode)
-			set_tank(master.get_analog(ANALOG_LEFT_Y), master.get_analog(ANALOG_RIGHT_Y));
-		pros::delay(20);
-	}
-}
-
-const int TRAY_OUT = 5900;
-
-void tray_control(void *)
-{
-	pros::Controller master(CONTROLLER_MASTER);
-	int counter = 0;
-	diff_hold();
-	while (true)
-	{
-		if (master.get_digital(DIGITAL_L1))
-		{
-			while (master.get_digital(DIGITAL_L1))
-				pros::delay(10);
-			switch(counter)
-			{
-				case 0:
-					while (!tray_pressed())
-					{
-						set_diff(127);
-					}
-					set_diff(0);
-					reset_diff_encoder();
-					counter++;
-					break;
-				case 1:
-					while (get_tray() < 3500)
-					{
-						set_diff(-127);
-					}
-					while (get_tray() < TRAY_OUT)
-						set_diff(-40);
-					set_diff(0);
-					counter = 0;
-					break;
-			}
-		}
-		pros::delay(20);
-	}
-}
 
 void tray_outtake(){
 	pros::Controller master(CONTROLLER_MASTER);
@@ -185,25 +111,12 @@ void tray_intake(){
  * When this callback is fired, it will toggle line 2 of the LCD text between
  * "I was pressed!" and nothing.
  */
-void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
-}
 
 void skills(){
 
 }
 
-void front_red(){
-
-}
-
-void front_blue(){
+void front(){
 
 }
 
@@ -260,26 +173,38 @@ void back(){
 	tray_intake();
 }
 
+//--------------------------------------------------------
+
+void on_center_button()
+{
+	static bool pressed = false;
+	pressed = !pressed;
+	if (pressed)
+		pros::lcd::set_text(2, "I was pressed!");
+	else
+		pros::lcd::clear_line(2);
+}
+
 void init_skills(){
 
 }
 
-void init_front_red(){
+void init_fr(){
 
 }
 
-void init_front_blue(){
+void init_fb(){
 
 }
 
-void init_back_red(){
+void init_br(){
 	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "A");
 	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2_ft, 0_deg}}, "B");
 	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -2_ft, 95_deg}}, "C");
 	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 0_ft, 0_deg}}, "D");
 }
 
-void init_back_blue(){
+void init_bb(){
 	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "A");
 	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -2_ft, 0_deg}}, "B");
 	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2_ft, 275_deg}}, "C");
@@ -290,38 +215,131 @@ void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::register_btn1_cb(on_center_button);
 
+	auto_selector();
+
+	if (selector == 1)
+		init_bb();
+	if (selector == 2)
+		init_br();
+	if (selector == 3)
+		init_fb();
+	if (selector == 4)
+		init_fr();
+
+	//Reset encoders
 	reset_drive_encoder();
 	reset_intake_encoder();
 	reset_diff_encoder();
-
-	init_back_blue();
 }
-
-
 
 void disabled() {}
 
 void competition_initialize() {}
 
-
+//-------------------------------------------------------------------
 
 
 void autonomous() {
+	//Reset encoders
+	reset_drive_encoder();
+	reset_intake_encoder();
+	reset_diff_encoder();
+
 	pros::Task tray_reset_t(tray_auto_reset, nullptr, "name");
-	back();
 
-//move generate path to initialize
-//this is for the left side of the field
+	if (selector == 1)
+		back();
+	if (selector == 2)
+		back();
+	if (selector == 3)
+		back();
+	if (selector == 4)
+		back();
 
-//s turn back to the first function
-//curve to turn to the wall
-//left motor higher		
+	//skills();
+
+	//move generate path to initialize
+	//this is for the left side of the field
+
+	//s turn back to the first function
+	//curve to turn to the wall
+	//left motor higher		
 }
 
+//-----------------------------------------------------------------------
+
+void intake_control(void *)
+{
+	pros::Controller master(CONTROLLER_MASTER);
+	intake_hold();
+	while (true)
+	{
+		if (master.get_digital(DIGITAL_X) && master.get_digital(DIGITAL_R1))
+			set_intake(60);
+		else if (master.get_digital(DIGITAL_X) && master.get_digital(DIGITAL_R2))
+			set_intake(-60);
+		else if (master.get_digital(DIGITAL_R1))
+			set_intake(127); //Intake
+		else if (master.get_digital(DIGITAL_R2))
+			set_intake(-127); //Outtake
+		else
+			set_intake(0); //No movement
+		pros::delay(20);
+	}
+}
+
+void drive_control(void *)
+{
+	pros::Controller master(CONTROLLER_MASTER);
+	drive_coast();
+	while (true)
+	{
+		if (!tray_mode)
+			set_tank(master.get_analog(ANALOG_LEFT_Y), master.get_analog(ANALOG_RIGHT_Y));
+		pros::delay(20);
+	}
+}
+
+void tray_control(void *)
+{
+	pros::Controller master(CONTROLLER_MASTER);
+	int counter = 0;
+	diff_hold();
+	while (true)
+	{
+		if (master.get_digital(DIGITAL_L1))
+		{
+			while (master.get_digital(DIGITAL_L1))
+				pros::delay(10);
+			switch (counter)
+			{
+			case 0:
+				while (!tray_pressed())
+				{
+					set_diff(127);
+				}
+				set_diff(0);
+				reset_diff_encoder();
+				counter++;
+				break;
+			case 1:
+				while (get_tray() < 3500)
+				{
+					set_diff(-127);
+				}
+				while (get_tray() < TRAY_OUT)
+					set_diff(-40);
+				set_diff(0);
+				counter = 0;
+				break;
+			}
+		}
+		pros::delay(20);
+	}
+}
 
 void opcontrol() {
 	pros::Controller master(CONTROLLER_MASTER);
-
 	master.set_text(0, 0, "#ThankYou448X");
 
 	pros::Task intake_control_t(intake_control, nullptr, "name");
@@ -332,23 +350,7 @@ void opcontrol() {
 	{
 		pros::lcd::set_text(1, "Selector Value: " + std::to_string(selector));
 		pros::lcd::set_text(2, "Tray Sensor:" + std::to_string(get_tray()));
-		if(!tray_pressed())
-		{
-			pros::lcd::clear_line(3);
-			pros::lcd::set_text(3, "Not pressed btw");
-		}
-		else if(tray_pressed())
-		{
-			pros::lcd::clear_line(3);
-			pros::lcd::set_text(3, "Pressed btw");
-		}
-		else
-		{
-			pros::lcd::clear_line(3);
-			pros::lcd::set_text(3, "Condition not true");
-		}
-		
-		
+		pros::lcd::set_text(3, "Number: " + std::to_string(get_auton_select()));
 
 		pros::delay(20);
 	}

@@ -30,6 +30,7 @@ pros::Motor r_intake(17, MOTOR_GEARSET_18, true);
 //Sensors
 //pros::ADIPotentiometer tray_pot('A');
 pros::ADIDigitalIn tray_limit('A');
+pros::ADIPotentiometer auton_selector('B');
 
 //Math
 int sgn(int input)
@@ -162,6 +163,11 @@ int get_tray()
     return -l_diff.get_position();
 }
 
+int get_auton_select()
+{
+    return auton_selector.get_value();
+}
+
 bool tray_pressed()
 {
     if (tray_limit.get_value() == 1)
@@ -169,6 +175,40 @@ bool tray_pressed()
         return true;
     }
     return false;
+}
+
+void auto_selector()
+{
+    pros::delay(300);
+
+    //RED FRONT
+    if (get_auton_select() > 0 && get_auton_select() < 1000)
+    {
+        selector = 1;
+        return;
+    }
+
+    //BLUE FRONT
+    else if (get_auton_select() > 1000 && get_auton_select() < 2000)
+    {
+        selector = 2;
+        return;
+    }
+
+    //RED BACK
+    else if (get_auton_select() > 2000 && get_auton_select() < 3000)
+    {
+        selector = 3;
+        return;
+    }
+
+    //BLUE BACK
+    else if (get_auton_select() > 3000 && get_auton_select() < 4096)
+    {
+        selector = 4;
+        return;
+    }
+    return;
 }
 
 void tray_auto_reset(void *)
