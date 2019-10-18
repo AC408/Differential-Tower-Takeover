@@ -36,6 +36,8 @@
 
 #include "api.h"
 #include "motor.hpp"
+#include "subsystems.hpp"
+#include "paths.hpp"
 #include "okapi/api.hpp"
 
 /**
