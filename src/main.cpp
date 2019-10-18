@@ -112,16 +112,128 @@ void tray_intake(){
  * "I was pressed!" and nothing.
  */
 
+//--------------------------------------------------------
+
+void on_center_button()
+{
+	static bool pressed = false;
+	pressed = !pressed;
+	if (pressed)
+		pros::lcd::set_text(2, "I was pressed!");
+	else
+		pros::lcd::clear_line(2);
+}
+
+void preauton(){
+	//Set brakes
+	drive_hold();
+	diff_hold();
+	intake_hold();
+
+	//Deploy
+	set_intake(-127);
+	pros::delay(100);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+//front is protect
+//back is unprotected
+
+
+void init_skills(){
+
+}
+
+void init_fr(){
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{2_ft, 0_ft, 0_deg}}, "A");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "B");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{6_ft, 2_ft, 0_deg}}, "C");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{6_ft, 0_ft, 0_deg}}, "D");
+}
+
+void init_fb(){
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{2_ft, 0_ft, 0_deg}}, "A");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "B");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{6_ft, -2_ft, 0_deg}}, "C");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{6_ft, 0_ft, 0_deg}}, "D");
+}
+
+void init_br(){
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "A");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2_ft, 0_deg}}, "B");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -2_ft, 95_deg}}, "C");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 0_ft, 0_deg}}, "D");
+}
+
+void init_bb(){
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "A");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -2_ft, 0_deg}}, "B");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2_ft, 275_deg}}, "C");
+	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 0_ft, 0_deg}}, "D");
+}
+
+void initialize() {
+	pros::lcd::initialize();
+	pros::lcd::register_btn1_cb(on_center_button);
+
+	auto_selector();
+
+	if (selector == 1)
+		init_bb();
+	if (selector == 2)
+		init_br();
+	if (selector == 3)
+		init_fb();
+	if (selector == 4)
+		init_fr();
+
+	//Reset encoders
+	reset_drive_encoder();
+	reset_intake_encoder();
+	reset_diff_encoder();
+}
+
+//--------------------------------------------------------------------------------
+
 void skills(){
 
 }
 
-void front(){
+//front is protect
+//back is unprotected
 
+void front_red(){
+	set_intake(127);
+	profileController.setTarget("A");
+	profileController.waitUntilSettled();
+	chassisController.turnAngle(270);
+	profileController.setTarget("B");
+	profileController.waitUntilSettled();
+	set_intake(0);
+	profileController.setTarget("C",true);
+	profileController.waitUntilSettled();
+	set_intake(127);
+	profileController.setTarget("D");
+	profileController.waitUntilSettled();
+	set_intake(0);
 }
 
-//front is protect
-//back is unprotected
+void front_blue(){
+	set_intake(127);
+	profileController.setTarget("A");
+	profileController.waitUntilSettled();
+	chassisController.turnAngle(90);
+	profileController.setTarget("B");
+	profileController.waitUntilSettled();
+	set_intake(0);
+	profileController.setTarget("C",true);
+	profileController.waitUntilSettled();
+	set_intake(127);
+	profileController.setTarget("D");
+	profileController.waitUntilSettled();
+	set_intake(0);
+}
 
 void back(){
 	//Set brakes
@@ -173,70 +285,13 @@ void back(){
 	tray_intake();
 }
 
-//--------------------------------------------------------
-
-void on_center_button()
-{
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed)
-		pros::lcd::set_text(2, "I was pressed!");
-	else
-		pros::lcd::clear_line(2);
-}
-
-void init_skills(){
-
-}
-
-void init_fr(){
-
-}
-
-void init_fb(){
-
-}
-
-void init_br(){
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "A");
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2_ft, 0_deg}}, "B");
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -2_ft, 95_deg}}, "C");
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 0_ft, 0_deg}}, "D");
-}
-
-void init_bb(){
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 0_deg}}, "A");
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -2_ft, 0_deg}}, "B");
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2_ft, 275_deg}}, "C");
-	profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{3_ft, 0_ft, 0_deg}}, "D");
-}
-
-void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::register_btn1_cb(on_center_button);
-
-	auto_selector();
-
-	if (selector == 1)
-		init_bb();
-	if (selector == 2)
-		init_br();
-	if (selector == 3)
-		init_fb();
-	if (selector == 4)
-		init_fr();
-
-	//Reset encoders
-	reset_drive_encoder();
-	reset_intake_encoder();
-	reset_diff_encoder();
-}
-
 void disabled() {}
 
 void competition_initialize() {}
 
 //-------------------------------------------------------------------
+//front is protect
+//back is unprotected
 
 
 void autonomous() {
@@ -246,6 +301,7 @@ void autonomous() {
 	reset_diff_encoder();
 
 	pros::Task tray_reset_t(tray_auto_reset, nullptr, "name");
+	preauton();
 
 	if (selector == 1)
 		back();
@@ -258,12 +314,6 @@ void autonomous() {
 
 	//skills();
 
-	//move generate path to initialize
-	//this is for the left side of the field
-
-	//s turn back to the first function
-	//curve to turn to the wall
-	//left motor higher		
 }
 
 //-----------------------------------------------------------------------
