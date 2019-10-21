@@ -6,6 +6,7 @@ void tray_outtake()
         set_diff(-127);
     while (get_tray() < TRAY_OUT)
         set_diff(-40);
+    set_diff(0);
 }
 
 void tray_intake()

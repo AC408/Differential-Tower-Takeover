@@ -31,7 +31,7 @@ void initialize()
 	pros::lcd::register_btn1_cb(on_center_button);
 
 	auto_selector();
-
+/*
 	if (selector == 1)
 		init_pb();
 	if (selector == 2)
@@ -40,8 +40,9 @@ void initialize()
 		init_upb();
 	if (selector == 4)
 		init_upr();
-
+*/
 	//Reset encoders
+	init_upb();
 	reset_drive_encoder();
 	reset_intake_encoder();
 	reset_diff_encoder();
@@ -61,7 +62,8 @@ void autonomous() {
 
 	pros::Task tray_reset_t(tray_auto_reset, nullptr, "name");
 	preauton();
-
+	unpro();
+/*
 	if (selector == 1)
 		unpro();
 	if (selector == 2)
@@ -70,7 +72,7 @@ void autonomous() {
 		unpro();
 	if (selector == 4)
 		unpro();
-
+*/
 	//skills();
 }
 

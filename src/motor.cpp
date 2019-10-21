@@ -160,7 +160,7 @@ int get_diff_spe()
 int get_tray()
 {
     //return tray_pot.get_value();
-    return -l_diff.get_position();
+    return -r_diff.get_position();
 }
 
 int get_auton_select()
