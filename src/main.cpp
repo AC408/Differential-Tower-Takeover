@@ -42,7 +42,6 @@ void initialize()
 		init_upr();
 */
 	//Reset encoders
-	init_upb();
 	reset_drive_encoder();
 	reset_intake_encoder();
 	reset_diff_encoder();
@@ -55,14 +54,17 @@ void competition_initialize() {}
 //----------------------------------------------------------------------------
 
 void autonomous() {
+	//init_upb();
+
 	//Reset encoders
 	reset_drive_encoder();
 	reset_intake_encoder();
 	reset_diff_encoder();
 
 	pros::Task tray_reset_t(tray_auto_reset, nullptr, "name");
-	preauton();
-	unpro();
+	//preauton();
+	//unpro();
+	timeTime();
 /*
 	if (selector == 1)
 		unpro();

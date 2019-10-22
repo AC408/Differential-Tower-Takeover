@@ -12,4 +12,6 @@ void pro_red();
 void pro_blue();
 void unpro();
 
+void timeTime();
+
 #endif

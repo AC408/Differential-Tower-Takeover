@@ -4,8 +4,10 @@ void tray_outtake()
 {
     while (get_tray() < 3500)
         set_diff(-127);
-    while (get_tray() < TRAY_OUT)
+    while (get_tray() < 5200)
         set_diff(-40);
+    while (get_tray() < TRAY_OUT)
+        set_diff(-20);
     set_diff(0);
 }
 

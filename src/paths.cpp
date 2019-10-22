@@ -265,3 +265,44 @@ void full()
     pros::delay(100);
     tray_intake();
 }
+
+void timeTime()
+{
+    set_intake(-127);
+    pros::delay(150);
+    set_intake(0);
+
+    set_intake(127);
+    set_tank(127, 127);
+    pros::delay(100);
+    set_tank(40, 40);
+    pros::delay(1600);
+    set_intake(0);
+
+    set_tank(-40, -40);
+    pros::delay(1600);
+    set_tank(40, -40);
+    pros::delay(50);
+    set_tank(-40, -40);
+    pros::delay(150);
+    set_tank(-40, 40);
+    pros::delay(50);
+    set_tank(-40, -40);
+    pros::delay(100);
+
+    set_intake(127);
+    set_tank(127, 127);
+    pros::delay(100);
+    set_tank(40, 40);
+    pros::delay(1600);
+    set_intake(0);
+
+    set_tank(-40, 40);
+    pros::delay(70);
+    set_tank(50, 50);
+    pros::delay(100);
+    set_tank(20, 20);
+    tray_outtake();
+    set_tank(-60, -60);
+    pros::delay(100);
+}
