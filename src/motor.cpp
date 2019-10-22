@@ -85,6 +85,12 @@ void intake_hold()
     r_intake.set_brake_mode(MOTOR_BRAKE_HOLD);
 }
 
+void intake_coast()
+{
+    l_intake.set_brake_mode(MOTOR_BRAKE_COAST);
+    r_intake.set_brake_mode(MOTOR_BRAKE_COAST);
+}
+
 void diff_coast()
 {
     l_diff.set_brake_mode(MOTOR_BRAKE_COAST);

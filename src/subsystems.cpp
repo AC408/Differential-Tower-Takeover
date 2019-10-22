@@ -7,8 +7,12 @@ void tray_outtake()
     while (get_tray() < 5200)
         set_diff(-40);
     while (get_tray() < TRAY_OUT)
+    {
         set_diff(-20);
+        intake_coast();
+    }
     set_diff(0);
+    
 }
 
 void tray_intake()
@@ -17,6 +21,7 @@ void tray_intake()
         set_diff(127);
     set_diff(0);
     reset_diff_encoder();
+    intake_hold();
 }
 
 void intake_control(void *)

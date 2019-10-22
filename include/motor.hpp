@@ -16,6 +16,7 @@ void set_intake(int input);
 void set_diff(int input);
 void set_diff(int input_l, int input_r);
 void intake_hold();
+void intake_coast();
 void diff_coast();
 void diff_hold();
 void drive_coast();
@@ -34,6 +35,6 @@ bool tray_pressed();
 void auto_selector();
 void tray_auto_reset(void *);
 
-#define TRAY_OUT 5900
+#define TRAY_OUT 6100
 
 #endif
