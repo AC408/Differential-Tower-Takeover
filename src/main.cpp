@@ -45,7 +45,7 @@ void initialize()
 	reset_drive_encoder();
 	reset_intake_encoder();
 	reset_diff_encoder();
-	init_upb();
+	//init_upb();
 
 }
 
@@ -63,9 +63,9 @@ void autonomous() {
 	reset_diff_encoder();
 
 	pros::Task tray_reset_t(tray_auto_reset, nullptr, "name");
-	preauton();
-	unpro();
-	//timeTime();
+	//preauton();
+	//unpro();
+	timeTime();
 /*
 	if (selector == 1)
 		unpro();

@@ -274,45 +274,65 @@ void full()
 
 void timeTime()
 {
+    //Deploy
     set_intake(-127);
-    pros::delay(150);
+    pros::delay(200);
     set_intake(0);
+    intake_hold();
 
+    //Row of 3
     set_intake(127);
     set_tank(127, 127);
     pros::delay(300);
+
     set_tank(90, 90);
     pros::delay(1300);
 
+    //Drive Back
     set_tank(-80, -80);
     pros::delay(900);
+
+    //Switch Rows
     set_tank(80, -80);
     pros::delay(270);
+    
     set_tank(-80, -80);
-
     pros::delay(1000);
+    
     set_tank(-80, 80);
     pros::delay(270);
+
+    //Align
     set_tank(-90, -90);
     pros::delay(900);
 
-    set_intake(127);
+    //Row of 4
     set_tank(127, 127);
     pros::delay(300);
+
     set_tank(90, 90);
     pros::delay(1300);
 
+    //Drive Back a Bit and Turn
     set_tank(-80, -80);
     pros::delay(150);
+    
     set_tank(-60, 60);
     pros::delay(1200);
+
+    //Drive towards zone 
     set_tank(80, 80);
     pros::delay(1000);
+
     set_tank(20, 20);
+    pros::delay(100);
+
     set_intake(-127);
     pros::delay(100);
     set_intake(0);
+
     tray_outtake();
-    set_tank(-60, -60);
+
+    set_tank(-80, -80);
     pros::delay(100);
 }
