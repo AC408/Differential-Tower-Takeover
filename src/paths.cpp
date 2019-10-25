@@ -44,9 +44,9 @@ void init_upb(){
     profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{30.5_in, 0_ft, 0_deg}}, "A");
     profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{.458_ft, 0_ft, 0_deg}}, "B");
     profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{.916_ft, 0_ft, 0_deg}},"E");
-    profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{43.5_in, 2_ft, 0_deg}}, "C");
-    profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 0_ft, 95_deg}}, "D");
-    profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{1_ft, 0_ft, 95_deg}}, "F");
+    profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{43.5_in, 2_ft, 4.5_deg}}, "C");
+    profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -1_ft, 95_deg}}, "D");
+    profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{1_ft, 0_ft, 0_deg}}, "F");
     
         //intake, 
     //30.5_ft
@@ -274,65 +274,63 @@ void full()
 
 void timeTime()
 {
-    //Deploy
+    /*
     set_intake(-127);
     pros::delay(200);
     set_intake(0);
     intake_hold();
 
-    //Row of 3
     set_intake(127);
-    set_tank(127, 127);
-    pros::delay(300);
+    set_tank(55, 55);
+    pros::delay(440);
 
     set_tank(90, 90);
     pros::delay(1300);
 
-    //Drive Back
     set_tank(-80, -80);
-    pros::delay(900);
-
-    //Switch Rows
-    set_tank(80, -80);
-    pros::delay(270);
-    
-    set_tank(-80, -80);
-    pros::delay(1000);
-    
-    set_tank(-80, 80);
-    pros::delay(270);
-
-    //Align
-    set_tank(-90, -90);
-    pros::delay(900);
-
-    //Row of 4
-    set_tank(127, 127);
-    pros::delay(300);
-
-    set_tank(90, 90);
-    pros::delay(1300);
-
-    //Drive Back a Bit and Turn
-    set_tank(-80, -80);
-    pros::delay(150);
-    
-    set_tank(-60, 60);
     pros::delay(1200);
 
-    //Drive towards zone 
-    set_tank(80, 80);
-    pros::delay(1000);
+    set_tank(80, -80);
+    pros::delay(290);
+    
+    set_tank(-80, -80);
+    pros::delay(900);
+    
+    set_tank(-80, 80);
+    pros::delay(290);
 
-    set_tank(20, 20);
-    pros::delay(100);
+    set_tank(-90, -90);
+    pros::delay(900);
+*/
+    //Row of 4
+    set_intake(-127);
+    pros::delay(200);
+    set_intake(127);
+    intake_hold();
+
+    set_tank(50, 50);
+    pros::delay(2700);
+//was 1900
+
+    //Drive Back a Bit and Turn
+    set_tank(-50, -50);
+    pros::delay(1400);
+    
+    set_tank(-60, 60);
+    pros::delay(950);
+
+    //Drive towards zone 
+    set_tank(50, 50);
+    pros::delay(1500);
+    set_tank(0,0);
 
     set_intake(-127);
-    pros::delay(100);
+    pros::delay(250);
     set_intake(0);
 
     tray_outtake();
 
-    set_tank(-80, -80);
-    pros::delay(100);
+    set_tank(-40, -40);
+    pros::delay(800);
+    set_tank(0,0);
 }
