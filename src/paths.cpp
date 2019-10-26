@@ -32,7 +32,7 @@ void init_upb_maybe()
 {
     profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{2_ft, 0_ft, 0_deg}}, "A");
     //25_in
-//    profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2.2_ft, 0_deg}}, "B");
+    profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, 2.2_ft, 0_deg}}, "B");
     profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -2_ft, 95_deg}}, "C");
     //53.5_in
     profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{2.55_ft, 0_ft, 0_deg}}, "D");
@@ -48,7 +48,7 @@ void init_upb(){
     profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{4_ft, -1_ft, 95_deg}}, "D");
     profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{1_ft, 0_ft, 0_deg}}, "F");
     
-        //intake, 
+    //intake, 
     //30.5_ft
     //E,E
     //s-curve (may need to chunk)
@@ -61,19 +61,26 @@ void skills()
 
 void pro_red()
 {
+    //forward
     set_intake(127);
     profileController.setTarget("A");
     profileController.waitUntilSettled();
     profileController.removePath("A");
+    
+    //perpendicular row
     chassisController.turnAngle(270);
     profileController.setTarget("B");
     profileController.waitUntilSettled();
     profileController.removePath("B");
     set_intake(0);
+
+    //s curve to second row
     profileController.setTarget("C", true);
     profileController.waitUntilSettled();
     profileController.removePath("C");
     set_intake(127);
+
+    //second row
     profileController.setTarget("D");
     profileController.waitUntilSettled();
     profileController.removePath("D");
@@ -82,19 +89,26 @@ void pro_red()
 
 void pro_blue()
 {
+    //forward
     set_intake(127);
     profileController.setTarget("A");
     profileController.waitUntilSettled();
     profileController.removePath("A");
+    
+    //perpendicular row
     chassisController.turnAngle(90);
     profileController.setTarget("B");
     profileController.waitUntilSettled();
     profileController.removePath("B");
     set_intake(0);
+
+    //s curve to second row
     profileController.setTarget("C", true);
     profileController.waitUntilSettled();
     profileController.removePath("C");
     set_intake(127);
+
+    //second row
     profileController.setTarget("D");
     profileController.waitUntilSettled();
     profileController.removePath("D");
@@ -112,6 +126,7 @@ void unpro(){
     profileController.generatePath({Point{0_ft, 0_ft, 0_deg}, Point{1_ft, 0_ft, 95_deg}}, "F");
  */
 
+    //drive forward
     set_intake(127);
     profileController.setTarget("A");
     profileController.waitUntilSettled();
@@ -121,10 +136,13 @@ void unpro(){
     profileController.waitUntilSettled();
     profileController.removePath("E");
 
+    //s curve
     set_intake(0);
     profileController.setTarget("C",true);
     profileController.waitUntilSettled();
     profileController.removePath("C");
+    
+    //driv forward, second row
     set_intake(127);
     profileController.setTarget("A");
     profileController.waitUntilSettled();
@@ -133,25 +151,20 @@ void unpro(){
     profileController.waitUntilSettled();
     profileController.removePath("B");
     set_intake(0);
+
+    //curve to face zone
     profileController.setTarget("D", true);
     profileController.waitUntilSettled();
     profileController.removePath("D");
     profileController.setTarget("F");
     profileController.waitUntilSettled();
 
+    //outtake
     tray_outtake();
     profileController.setTarget("F", true);
     profileController.waitUntilSettled();
     profileController.removePath("F");
-
-
 }
-
-
-
-
-
-
 
 
 
@@ -163,6 +176,7 @@ void unpro_maybe()
     //E,E
     //s-curve (may need to chunk)
     //intake, A, E, E, E, intake, C, D, deploy
+
     //First row
     set_intake(127);
     profileController.setTarget("A");
@@ -217,7 +231,6 @@ void full()
     profileController.waitUntilSettled();
     profileController.setTarget("E");
     profileController.waitUntilSettled();
-
     set_intake(0);
 
     //Sexy S curve
@@ -247,13 +260,10 @@ void full()
     profileController.waitUntilSettled();
     profileController.setTarget("E");
     profileController.waitUntilSettled();
-    
     profileController.removePath("E");
-    
     set_intake(0);
 
-    //Turn owo
- 
+    //Turn 
     profileController.setTarget("C", true);
     profileController.waitUntilSettled();
     profileController.removePath("C");
@@ -272,9 +282,8 @@ void full()
     tray_intake();
 }
 
-void timeTime()
-{
-    /*
+void blueTime(){
+   /*
     set_intake(-127);
     pros::delay(200);
     set_intake(0);
@@ -304,13 +313,12 @@ void timeTime()
 */
     //Row of 4
     set_intake(-127);
-    pros::delay(200);
+    pros::delay(400);
     set_intake(127);
     intake_hold();
 
     set_tank(50, 50);
     pros::delay(2700);
-//was 1900
 
     //Drive Back a Bit and Turn
     set_tank(-50, -50);
@@ -328,8 +336,46 @@ void timeTime()
     pros::delay(250);
     set_intake(0);
 
+    //outtake
     tray_outtake();
 
+    //drive back
+    set_tank(-40, -40);
+    pros::delay(800);
+    set_tank(0,0);
+}
+
+void redTime()
+{
+    //Row of 4
+    set_intake(-127);
+    pros::delay(400);
+    set_intake(127);
+    intake_hold();
+
+    set_tank(50, 50);
+    pros::delay(2700);
+
+    //Drive Back a Bit and Turn
+    set_tank(-50, -50);
+    pros::delay(1400);
+    
+    set_tank(60, -60);
+    pros::delay(950);
+
+    //Drive towards zone 
+    set_tank(50, 50);
+    pros::delay(1500);
+    set_tank(0,0);
+
+    set_intake(-127);
+    pros::delay(250);
+    set_intake(0);
+
+    //outtake
+    tray_outtake();
+
+    //drive back
     set_tank(-40, -40);
     pros::delay(800);
     set_tank(0,0);

@@ -65,7 +65,14 @@ void autonomous() {
 	pros::Task tray_reset_t(tray_auto_reset, nullptr, "name");
 	//preauton();
 	//unpro();
-	timeTime();
+
+	//red path
+	redTime();
+
+	//blue path
+	//blueTime();
+
+
 /*
 	if (selector == 1)
 		unpro();
