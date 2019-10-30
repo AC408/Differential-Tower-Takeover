@@ -18,10 +18,10 @@ AsyncMotionProfileController profileController = AsyncControllerFactory::motionP
 int selector = 0;
 
 //Motors
-pros::Motor lb_drive(11, MOTOR_GEARSET_18);
-pros::Motor lf_drive(12, MOTOR_GEARSET_18, true);
-pros::Motor rf_drive(19, MOTOR_GEARSET_18);
-pros::Motor rb_drive(20, MOTOR_GEARSET_18, true);
+pros::Motor lb_drive(1, MOTOR_GEARSET_18);
+pros::Motor lf_drive(2, MOTOR_GEARSET_18);
+pros::Motor rf_drive(9, MOTOR_GEARSET_18, true);
+pros::Motor rb_drive(10, MOTOR_GEARSET_18, true);
 pros::Motor l_diff(13, MOTOR_GEARSET_18);
 pros::Motor r_diff(18, MOTOR_GEARSET_18);
 pros::Motor l_intake(14, MOTOR_GEARSET_18);
