@@ -2,12 +2,13 @@
 
 // Otherwise, you should specify the gearset and scales for your robot
 ChassisControllerPID chassisController = ChassisControllerFactory::create(
-    {11, 12}, {-20, 19},
-    IterativePosPIDController::Gains{0.001, 0, 0.0001}, //{0.001, 0, 0.0001}}
-    IterativePosPIDController::Gains{0.001, 0, 0.0001},
+    {1, 2}, {-9, -10},
+//    IterativePosPIDController::Gains{0.0076, 0, 0.0001}, //{0.001, 0, 0.0001}}   
+    IterativePosPIDController::Gains{0.002, 0, 0.00005}, //{0.001, 0, 0.0001}}
+    IterativePosPIDController::Gains{0.0005, 0, 0.0002},
     IterativePosPIDController::Gains{0.01725, 0.025, 0.0004}, //0.01, 0.000325, 0.01425, 0.0004
     AbstractMotor::gearset::green,                            //0.0175, 0.01, 0.000375
-    {4.125_in, 12.28125_in});
+    {4.125_in, 9.0_in});
 
 AsyncMotionProfileController profileController = AsyncControllerFactory::motionProfile(
     0.8,                // Maximum linear velocity of the Chassis in m/s

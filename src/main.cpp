@@ -67,11 +67,11 @@ void autonomous() {
 	//unpro();
 
 	//red path
-	redTime();
+//	redTime();
 
 	//blue path
 	//blueTime();
-
+chassisController.moveDistance(72_in);
 
 /*
 	if (selector == 1)
